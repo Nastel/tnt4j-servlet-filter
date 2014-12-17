@@ -1,0 +1,59 @@
+<project name="TrackingFilter" default="tracking-filter" basedir=".">
+
+  <echo message="Processing ${ant.project.name}${line.separator}" level="info"/>
+
+  <condition property="trackroot" value="${basedir}/.">
+    <not><isset property="trackroot"/></not>
+  </condition>
+  
+  <!-- Import default properties for jKool builds --> 
+  <import file="${trackroot}/build-properties.xml"/>
+
+  <property name="src"       value="src"/>
+  <property name="lib"       value="lib"/>
+  <property name="bin"       value="${tfilter-build}/bin"/>
+  <property name="jar"       value="${tfilter-build}/tnt4j-servlet-filter.jar"/>
+
+  <target name="init">
+    <tstamp/>
+    <mkdir dir="${bin}"/>
+    <mkdir dir="${tfilter-build}/lib"/>
+	<copy todir="${tfilter-build}/lib">
+      <fileset dir="${lib}">
+        <include name="*.jar"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <!-- Compile into ${bin} directory -->
+  <target name="compile" depends="init" description="compile the source">
+    <javac destdir="${bin}" debug="true" debuglevel="${debuglevel}" source="${source}" target="${target}">
+      <src path="${src}"/>
+      <classpath>
+        <fileset dir="${tfilter-build}/lib"/>
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="clean" description="clean up">
+    <echo message="Clean of ${ant.project.name} Complete${line.separator}" level="info"/>
+    <delete dir="${tfilter-build}"/>
+    <echo message="Deleting old archives" level="info"/>
+    <delete dir="${tfilter-build}" includes="*.jar,*-all.zip"/>
+ </target>
+
+  <target name="tracking-filter" depends="init,compile" description="build ServletTracker">
+    <jar jarfile="${jar}" basedir="${bin}" update="false">
+      <manifest>
+        <attribute name="Implementation-Vendor" value="${vendor}"/>
+        <attribute name="Implementation-Title" value="${prodname}"/>
+        <attribute name="Implementation-Version" value="${version}"/>
+      </manifest>
+    </jar>
+    
+    <echo message="Build of ${ant.project.name} Complete${line.separator}" level="info"/>
+  </target>
+
+  <target name="all" depends="tracking-filter" description="generate the distribution"/>
+  <target name="rebuild" depends="clean,all" description="clean and build"/>
+</project>

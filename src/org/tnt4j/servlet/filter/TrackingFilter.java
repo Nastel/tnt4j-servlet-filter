@@ -42,6 +42,9 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 import com.nastel.jkool.tnt4j.utils.Utils;
 
 public class TrackingFilter implements Filter {
+	public static final String SNAPSHOT_PARMS = "Parameters";
+	public static final String SNAPSHOT_ATTRS = "Attributes";
+	
 	public static final String CORRID_SESSION_ID = "session-id";
 	public static final String TAG_URI_QUERY = "uri-query";
 	public static final String USER_REMOTE = "user-remote";
@@ -131,7 +134,7 @@ public class TrackingFilter implements Filter {
 
 	protected void finishActivity(HttpServletRequest httpReq, TrackingActivity activity, Throwable error) {
 		Map<String, String[]> pMap = httpReq.getParameterMap();
-		Snapshot parms = logger.newSnapshot(httpReq.getRequestURI(), "Parameters");
+		Snapshot parms = logger.newSnapshot(httpReq.getRequestURI(), SNAPSHOT_PARMS);
 		for (Entry<String, String[]> entry: pMap.entrySet()) {
 			String [] list = entry.getValue();
 			if (list != null && list.length > 0) {
@@ -139,7 +142,7 @@ public class TrackingFilter implements Filter {
 			}
 		}
 		
-		Snapshot attrs = logger.newSnapshot(httpReq.getRequestURI(), "Attributes");
+		Snapshot attrs = logger.newSnapshot(httpReq.getRequestURI(), SNAPSHOT_ATTRS);
 		Enumeration<String> enList = httpReq.getAttributeNames();
 		while (enList.hasMoreElements()) {
 			String key = enList.nextElement();

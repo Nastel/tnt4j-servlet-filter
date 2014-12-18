@@ -21,6 +21,7 @@ import java.net.URLDecoder;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -29,10 +30,13 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
 
 import com.nastel.jkool.tnt4j.TrackingLogger;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.OpType;
+import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 import com.nastel.jkool.tnt4j.utils.Utils;
@@ -41,16 +45,19 @@ public class TrackingFilter implements Filter {
 	public static final String CORRID_SESSION_ID = "session-id";
 	public static final String TAG_URI_QUERY = "uri-query";
 	public static final String USER_REMOTE = "user-remote";
+	public static final String MSG_HTTP_HEADER = "http-header";
 
 	public static final String CORRID_KEY = "corr-key";
 	public static final String TAG_KEY = "tag-key";
 	public static final String USER_KEY = "user-key";
+	public static final String MSG_KEY = "msg-key";
 	public static final String OPLEVEL_KEY = "op-level";
 
 	TrackingLogger logger;
 	String corrKey = CORRID_SESSION_ID;
 	String tagKey = TAG_KEY;
 	String userKey = USER_KEY;
+	String msgKey = MSG_KEY;
 	OpLevel level = OpLevel.INFO;
 
 	@Override
@@ -64,6 +71,9 @@ public class TrackingFilter implements Filter {
 		
 		userKey = config.getInitParameter(USER_KEY);
 		userKey = userKey == null ? USER_REMOTE : userKey;
+		
+		msgKey = config.getInitParameter(MSG_KEY);
+		msgKey = msgKey == null ? MSG_HTTP_HEADER : msgKey;
 		
 		String levelString = config.getInitParameter(OPLEVEL_KEY);
 		level = levelString != null ? OpLevel.valueOf(levelString) : level;
@@ -81,6 +91,7 @@ public class TrackingFilter implements Filter {
 		Throwable error = null;
 		TrackingActivity activity = null;
 		TrackingEvent httpEvent = null;
+		HttpServletResponseWrapper httpResp = null;
 		try {
 			long beginUsec = Utils.currentTimeUsec();
 			if (request instanceof HttpServletRequest) {
@@ -90,25 +101,56 @@ public class TrackingFilter implements Filter {
 				activity = logger.newActivity(level, httpReq.getContextPath());
 				activity.start(beginUsec);
 				activity.setLocation(httpReq.getRemoteAddr());
+				activity.setResource(httpReq.getRequestURI());
 				String username = getUserName(httpReq);
 				if (username != null) activity.setUser(username);
 				httpEvent = captureRequest(httpReq, activity);
 				httpEvent.start(activity.getStartTime());
 			}
-			chain.doFilter(request, response);
+			if (response instanceof HttpServletResponse) {
+				httpResp = new HttpServletResponseWrapper((HttpServletResponse)response);
+				chain.doFilter(request, httpResp);
+			} else {
+				chain.doFilter(request, response);
+			}
 		} catch (Throwable ex) {
 			error = ex;
 			throw ex;
 		} finally {
 			if (activity != null) {
+				if (httpResp != null) {
+					activity.setReasonCode(httpResp.getStatus());
+					httpEvent.getOperation().setReasonCode(httpResp.getStatus());
+				}
 				httpEvent.stop(error);
 				activity.tnt(httpEvent);
-				activity.stop(error);
-				logger.tnt(activity);
+				finishActivity((HttpServletRequest)request, activity, error);
 			}
 		}
 	}
 
+	protected void finishActivity(HttpServletRequest httpReq, TrackingActivity activity, Throwable error) {
+		Map<String, String[]> pMap = httpReq.getParameterMap();
+		Snapshot parms = logger.newSnapshot(httpReq.getRequestURI(), "Parameters");
+		for (Entry<String, String[]> entry: pMap.entrySet()) {
+			String [] list = entry.getValue();
+			if (list != null && list.length > 0) {
+				parms.add(entry.getKey(), list[0]);
+			}
+		}
+		
+		Snapshot attrs = logger.newSnapshot(httpReq.getRequestURI(), "Attributes");
+		Enumeration<String> enList = httpReq.getAttributeNames();
+		while (enList.hasMoreElements()) {
+			String key = enList.nextElement();
+			attrs.add(key, httpReq.getAttribute(key));
+		}
+		activity.stop(error);
+		if (parms.size() > 0) activity.addSnapshot(parms);
+		if (attrs.size() > 0) activity.addSnapshot(attrs);
+		logger.tnt(activity);
+	}
+	
 	protected TrackingEvent captureRequest(HttpServletRequest httpReq, TrackingActivity activity) {
 		String corrid = getCorrId(httpReq);
 		String msgTag = getMsgTag(httpReq);
@@ -118,12 +160,23 @@ public class TrackingFilter implements Filter {
 		        httpReq.getMethod() + httpReq.getRequestURI(),
 		        corrid,
 		        msgTag,
-		        getMessage(httpReq));
+		        getMsgBody(httpReq));
 		httpEvent.getOperation().setUser(activity.getUser());
 		httpEvent.setLocation(httpReq.getRemoteAddr());
+		httpEvent.getOperation().setResource(httpReq.getRequestURI());
 		return httpEvent;
 	}
 
+	protected String getMsgBody(HttpServletRequest httpReq) {
+		String msgText = null;
+		if (msgKey.equalsIgnoreCase(MSG_HTTP_HEADER)) {
+			msgText = getMessage(httpReq);
+		} else {
+			msgText = httpReq.getParameter(msgKey);	
+		}		
+		return msgText;
+	}
+	
 	protected String getUserName(HttpServletRequest httpReq) {
 		String username = null;
 		if (userKey.equalsIgnoreCase(USER_REMOTE)) {
@@ -135,8 +188,7 @@ public class TrackingFilter implements Filter {
 	}
 	
 	protected String getCorrId(HttpServletRequest httpReq) {
-		String corrid = null;
-		
+		String corrid = null;		
 		if (corrKey.equalsIgnoreCase(CORRID_SESSION_ID)) {
 			corrid = httpReq.getSession().getId();
 		} else {
@@ -146,10 +198,9 @@ public class TrackingFilter implements Filter {
 	}
 	
 	protected String getMsgTag(HttpServletRequest httpReq) {
-		String msgTag = null;
-		
-		String queryString = httpReq.getQueryString();
+		String msgTag = null;		
 		if (tagKey.equalsIgnoreCase(TAG_URI_QUERY)) {
+			String queryString = httpReq.getQueryString();
 			msgTag = queryString != null? httpReq.getRequestURI() + "?" + queryString: httpReq.getRequestURI();
 		} else {
 			msgTag = httpReq.getParameter(tagKey);			

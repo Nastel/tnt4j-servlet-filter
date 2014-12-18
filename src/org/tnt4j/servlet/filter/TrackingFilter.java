@@ -57,7 +57,7 @@ public class TrackingFilter implements Filter {
 	public static final String OPLEVEL_KEY = "op-level";
 
 	TrackingLogger logger;
-	String corrKey = CORRID_SESSION_ID;
+	String corrKey = CORRID_KEY;
 	String tagKey = TAG_KEY;
 	String userKey = USER_KEY;
 	String msgKey = MSG_KEY;
@@ -105,10 +105,13 @@ public class TrackingFilter implements Filter {
 				activity.start(beginUsec);
 				activity.setLocation(httpReq.getRemoteAddr());
 				activity.setResource(httpReq.getRequestURI());
-				String username = getUserName(httpReq);
-				if (username != null) activity.setUser(username);
 				httpEvent = captureRequest(httpReq, activity);
 				httpEvent.start(activity.getStartTime());
+				String username = getUserName(httpReq);
+				if (username != null) {
+					activity.setUser(username);
+					httpEvent.getOperation().setUser(username);
+				}
 			}
 			if (response instanceof HttpServletResponse) {
 				httpResp = new HttpServletResponseWrapper((HttpServletResponse)response);
@@ -156,15 +159,13 @@ public class TrackingFilter implements Filter {
 	
 	protected TrackingEvent captureRequest(HttpServletRequest httpReq, TrackingActivity activity) {
 		String corrid = getCorrId(httpReq);
-		String msgTag = getMsgTag(httpReq);
-		
+		String msgTag = getMsgTag(httpReq);	
 		TrackingEvent httpEvent = logger.newEvent(activity.getSeverity(),
 				OpType.REQUEST,
 		        httpReq.getMethod() + httpReq.getRequestURI(),
 		        corrid,
 		        msgTag,
 		        getMsgBody(httpReq));
-		httpEvent.getOperation().setUser(activity.getUser());
 		httpEvent.setLocation(httpReq.getRemoteAddr());
 		httpEvent.getOperation().setResource(httpReq.getRequestURI());
 		return httpEvent;
@@ -183,7 +184,7 @@ public class TrackingFilter implements Filter {
 	protected String getUserName(HttpServletRequest httpReq) {
 		String username = null;
 		if (userKey.equalsIgnoreCase(USER_REMOTE)) {
-			username = httpReq.getRemoteAddr();
+			username = httpReq.getRemoteUser();
 		} else {
 			username = httpReq.getParameter(userKey);	
 		}		

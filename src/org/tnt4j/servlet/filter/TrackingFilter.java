@@ -123,6 +123,13 @@ public class TrackingFilter implements Filter {
 			error = ex;
 			throw ex;
 		} finally {
+			endTiming(request, httpResp, activity, httpEvent, error);
+		}
+	}
+
+	protected void endTiming(ServletRequest request, HttpServletResponseWrapper httpResp,
+	        TrackingActivity activity, TrackingEvent httpEvent, Throwable error) {
+		try {
 			if (activity != null) {
 				if (httpResp != null) {
 					activity.setReasonCode(httpResp.getStatus());
@@ -130,12 +137,15 @@ public class TrackingFilter implements Filter {
 				}
 				httpEvent.stop(error);
 				activity.tnt(httpEvent);
-				finishActivity((HttpServletRequest)request, activity, error);
+				endAndEnrich((HttpServletRequest)request, activity, error);
+				logger.tnt(activity);
 			}
+		} catch (Throwable ex) {
+			logger.log(OpLevel.ERROR, "Failed to time event", ex);
 		}
 	}
 
-	protected void finishActivity(HttpServletRequest httpReq, TrackingActivity activity, Throwable error) {
+	protected void endAndEnrich(HttpServletRequest httpReq, TrackingActivity activity, Throwable error) {
 		Map<String, String[]> pMap = httpReq.getParameterMap();
 		Snapshot parms = logger.newSnapshot(httpReq.getRequestURI(), SNAPSHOT_PARMS);
 		for (Entry<String, String[]> entry: pMap.entrySet()) {
@@ -154,7 +164,6 @@ public class TrackingFilter implements Filter {
 		activity.stop(error);
 		if (parms.size() > 0) activity.addSnapshot(parms);
 		if (attrs.size() > 0) activity.addSnapshot(attrs);
-		logger.tnt(activity);
 	}
 	
 	protected TrackingEvent captureRequest(HttpServletRequest httpReq, TrackingActivity activity) {

@@ -18,6 +18,11 @@
     <tstamp/>
     <mkdir dir="${bin}"/>
     <mkdir dir="${tfilter-build}/lib"/>
+	<copy todir="${lib}" quiet="true" failonerror="false">
+      <fileset dir="${tfilter-build}/../tnt4j">
+        <include name="tnt4j-api-final-all.jar"/>
+      </fileset>
+    </copy>
 	<copy todir="${tfilter-build}/lib">
       <fileset dir="${lib}">
         <include name="*.jar"/>

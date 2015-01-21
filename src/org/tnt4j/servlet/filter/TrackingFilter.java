@@ -44,12 +44,14 @@ import com.nastel.jkool.tnt4j.utils.Utils;
 public class TrackingFilter implements Filter {
 	public static final String SNAPSHOT_PARMS = "Parameters";
 	public static final String SNAPSHOT_ATTRS = "Attributes";
+	public static final int    DEFAULT_FIELD_SIZE = 512;
 	
 	public static final String CORRID_SESSION_ID = "session-id";
 	public static final String TAG_URI_QUERY = "uri-query";
 	public static final String USER_REMOTE = "user-remote";
 	public static final String MSG_HTTP_HEADER = "http-header";
 
+	public static final String PARM_SIZE_KEY = "parm-size";
 	public static final String CORRID_KEY = "corr-key";
 	public static final String TAG_KEY = "tag-key";
 	public static final String USER_KEY = "user-key";
@@ -57,6 +59,8 @@ public class TrackingFilter implements Filter {
 	public static final String OPLEVEL_KEY = "op-level";
 
 	TrackingLogger logger;
+	
+	int maxParmSize = DEFAULT_FIELD_SIZE;
 	String corrKey = CORRID_KEY;
 	String tagKey = TAG_KEY;
 	String userKey = USER_KEY;
@@ -78,6 +82,9 @@ public class TrackingFilter implements Filter {
 		msgKey = config.getInitParameter(MSG_KEY);
 		msgKey = msgKey == null ? MSG_HTTP_HEADER : msgKey;
 		
+		String psize = config.getInitParameter(PARM_SIZE_KEY);
+		maxParmSize = psize == null ? maxParmSize : Integer.parseInt(psize);
+
 		String levelString = config.getInitParameter(OPLEVEL_KEY);
 		level = levelString != null ? OpLevel.valueOf(levelString) : level;
 		logger = TrackingLogger.getInstance(source);
@@ -145,13 +152,21 @@ public class TrackingFilter implements Filter {
 		}
 	}
 
+	protected String trimField(String field, int maxsize) {
+		int size = field.length();
+		if (size > maxsize) {
+			field = field.substring(0, maxsize);
+		}
+		return field;
+	}
+	
 	protected void endAndEnrich(HttpServletRequest httpReq, TrackingActivity activity, Throwable error) {
 		Map<String, String[]> pMap = httpReq.getParameterMap();
 		Snapshot parms = logger.newSnapshot(httpReq.getRequestURI(), SNAPSHOT_PARMS);
 		for (Entry<String, String[]> entry: pMap.entrySet()) {
 			String [] list = entry.getValue();
 			if (list != null && list.length > 0) {
-				parms.add(entry.getKey(), list[0]);
+				parms.add(entry.getKey(), trimField(list[0], maxParmSize));
 			}
 		}
 		

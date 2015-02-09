@@ -3,7 +3,7 @@
 -->
 <project name="TrackerBuildProps">
   <!-- Installation package directories -->
-  <property name="tfilter-build"       value="${basedir}/../build/TrackingFilter"/>
+  <property name="tfilter-build"       value="${basedir}/../build/tfilter"/>
   <property name="tfilter-install"     value="${tfilter-build}/install"/>
   
   <!-- Default compilation settings -->

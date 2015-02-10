@@ -2,53 +2,53 @@
 
   <echo message="Processing ${ant.project.name}${line.separator}" level="info"/>
 
-  <condition property="trackroot" value="${basedir}/.">
-    <not><isset property="trackroot"/></not>
+  <condition property="root" value="${basedir}/.">
+    <not><isset property="root"/></not>
   </condition>
   
   <!-- Import default properties for jKool builds --> 
-  <import file="${trackroot}/build-properties.xml"/>
+  <import file="${root}/build-properties.xml"/>
 
   <property name="src"       value="src"/>
   <property name="lib"       value="lib"/>
-  <property name="bin"       value="${tfilter-build}/bin"/>
-  <property name="jar"       value="${tfilter-build}/tnt4j-servlet-filter.jar"/>
+  <property name="classes"   value="classes"/>
+  <property name="jar"       value="${project-build}/tnt4j-servlet-filter.jar"/>
 
   <target name="init">
     <tstamp/>
-    <mkdir dir="${bin}"/>
-    <mkdir dir="${tfilter-build}/lib"/>
+    <mkdir dir="${classes}"/>
+    <mkdir dir="${project-build}/lib"/>
 	<copy todir="${lib}" quiet="true" failonerror="false">
-      <fileset dir="${tfilter-build}/../tnt4j">
+      <fileset dir="${project-build}/../tnt4j">
         <include name="tnt4j-api-final-all.jar"/>
       </fileset>
     </copy>
-	<copy todir="${tfilter-build}/lib">
+	<copy todir="${project-build}/lib">
       <fileset dir="${lib}">
         <include name="*.jar"/>
       </fileset>
     </copy>
   </target>
 
-  <!-- Compile into ${bin} directory -->
+  <!-- Compile into ${classes} directory -->
   <target name="compile" depends="init" description="compile the source">
-    <javac destdir="${bin}" debug="true" debuglevel="${debuglevel}" source="${source}" target="${target}">
+    <javac destdir="${classes}" debug="true" debuglevel="${debuglevel}" source="${source}" target="${target}">
       <src path="${src}"/>
       <classpath>
-        <fileset dir="${tfilter-build}/lib"/>
+        <fileset dir="${project-build}/lib"/>
       </classpath>
     </javac>
   </target>
 
   <target name="clean" description="clean up">
     <echo message="Clean of ${ant.project.name} Complete${line.separator}" level="info"/>
-    <delete dir="${tfilter-build}"/>
+    <delete dir="${project-build}"/>
     <echo message="Deleting old archives" level="info"/>
-    <delete dir="${tfilter-build}" includes="*.jar,*-all.zip"/>
+    <delete dir="${project-build}" includes="*.jar,*-all.zip"/>
  </target>
 
-  <target name="tracking-filter" depends="init,compile" description="build ServletTracker">
-    <jar jarfile="${jar}" basedir="${bin}" update="false">
+  <target name="tracking-filter" depends="init,compile" description="build ${prodname}">
+    <jar jarfile="${jar}" basedir="${classes}" update="false">
       <manifest>
         <attribute name="Implementation-Vendor" value="${vendor}"/>
         <attribute name="Implementation-Title" value="${prodname}"/>

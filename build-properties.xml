@@ -3,8 +3,8 @@
 -->
 <project name="TrackerBuildProps">
   <!-- Installation package directories -->
-  <property name="tfilter-build"       value="${basedir}/../build/tfilter"/>
-  <property name="tfilter-install"     value="${tfilter-build}/install"/>
+  <property name="project-build"       value="${basedir}/../build/tracking-filter"/>
+  <property name="project-install"     value="${project-build}/install"/>
   
   <!-- Default compilation settings -->
   <property name="target"     value="1.7"/>
@@ -12,7 +12,7 @@
   <property name="debuglevel" value="source,lines,vars"/>
 
   <!-- loads project version and build information -->
-  <loadproperties srcFile="${trackroot}/build.properties"/>
+  <loadproperties srcFile="${root}/build.properties"/>
 
   <!-- exclude VSS control files -->
   <defaultexcludes add="**/*.scc"/>

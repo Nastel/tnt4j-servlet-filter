@@ -31,9 +31,9 @@
         <h1>
 <a id="trackingfilter" class="anchor" href="#trackingfilter" aria-hidden="true"><span class="octicon octicon-link"></span></a>TrackingFilter</h1>
 
-<p>Simple end-user monitoring for JEE web applications.</p>
+<p>Simple end-user monitoring for Java EE web applications.</p>
 
-<p>TrackingFilter is JEE HTTP Servlet Tracking Filter. This servlet filter tracks the following:</p>
+<p>TrackingFilter is an implementation of Java EE HTTP Servlet Filter. This servlet filter tracks the following:</p>
 
 <ul>
 <li>End-user performance, behavior</li>
@@ -43,6 +43,26 @@
 </ul>
 
 <p>The output can be streamed to any of the TNT4J sinks: file, log4j, socket, visual analysis using jkoolcloud.com (<a href="http://www.jkoolcloud.com">http://www.jkoolcloud.com</a>).</p>
+
+<h2>
+<a id="adding-tracking-to-your-web-applications" class="anchor" href="#adding-tracking-to-your-web-applications" aria-hidden="true"><span class="octicon octicon-link"></span></a>Adding Tracking to your web applications</h2>
+
+<p>Simply add the following to your application's <code>web.xml</code>:</p>
+
+<div class="highlight highlight-xml"><pre>&lt;<span class="pl-ent">filter</span>&gt;
+    &lt;<span class="pl-ent">filter-name</span>&gt;TrackingFilter&lt;/<span class="pl-ent">filter-name</span>&gt;
+    &lt;<span class="pl-ent">filter-class</span>&gt;org.tnt4j.servlet.filter.TrackingFilter&lt;/<span class="pl-ent">filter-class</span>&gt;
+&lt;/<span class="pl-ent">filter</span>&gt;
+&lt;<span class="pl-ent">filter-mapping</span>&gt;
+    &lt;<span class="pl-ent">filter-name</span>&gt;TrackingFilter&lt;/<span class="pl-ent">filter-name</span>&gt;
+    &lt;<span class="pl-ent">url-pattern</span>&gt;/*&lt;/<span class="pl-ent">url-pattern</span>&gt;
+&lt;/<span class="pl-ent">filter-mapping</span>&gt;
+&lt;<span class="pl-ent">context-param</span>&gt;
+    &lt;<span class="pl-ent">param-name</span>&gt;op-level&lt;/<span class="pl-ent">param-name</span>&gt;
+    &lt;<span class="pl-ent">param-value</span>&gt;DEBUG&lt;/<span class="pl-ent">param-value</span>&gt;
+&lt;/<span class="pl-ent">context-param</span>&gt;</pre></div>
+
+<p><b>NOTE:</b> Make sure all jar files required by TrackingFilter are in your application's classpath.</p>
 
 <h1>
 <a id="project-dependencies" class="anchor" href="#project-dependencies" aria-hidden="true"><span class="octicon octicon-link"></span></a>Project Dependencies</h1>

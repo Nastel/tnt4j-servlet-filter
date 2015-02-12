@@ -1,13 +1,31 @@
 # TrackingFilter
 Simple end-user monitoring for JEE web applications.
 
-TrackingFilter is JEE HTTP Servlet Tracking Filter. This servlet filter tracks the following:
+TrackingFilter is an implementation of JEE HTTP Servlet Filter. This servlet filter tracks the following:
 * End-user performance, behavior
 * HTTP request performance, errors
 * HTTP header, request parameters and attributes
 * JVM context such as CPU, memory, GC
 
 The output can be streamed to any of the TNT4J sinks: file, log4j, socket, visual analysis using jkoolcloud.com (http://www.jkoolcloud.com).
+
+## Adding Tracking to your web applications
+Simply add the following to your application's `web.xml`:
+```xml
+<filter>
+	<filter-name>TrackingFilter</filter-name>
+	<filter-class>org.tnt4j.servlet.filter.TrackingFilter</filter-class>
+</filter>
+<filter-mapping>
+	<filter-name>TrackingFilter</filter-name>
+	<url-pattern>/*</url-pattern>
+</filter-mapping>
+<context-param>
+	<param-name>op-level</param-name>
+	<param-value>DEBUG</param-value>
+</context-param>
+```
+<b>NOTE:</b> Make sure all jar files required by TrackingFilter are in your application's classpath.
 
 # Project Dependencies
 TrackingFilter requires the following:

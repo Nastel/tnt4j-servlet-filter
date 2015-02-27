@@ -3,7 +3,7 @@ Simple end-user monitoring for Java EE web applications.
 
 TrackingFilter is an implementation of Java EE HTTP Servlet Filter. This servlet filter tracks the following:
 * End-user performance, behavior
-* HTTP request performance, errors
+* HTTP request performance, errors, exceptions
 * HTTP header, request parameters and attributes
 * JVM context such as CPU, memory, GC
 
@@ -25,7 +25,7 @@ Simply add the following to your application's `web.xml`:
 	<param-value>DEBUG</param-value>
 </context-param>
 ```
-<b>NOTE:</b> Make sure all jar files required by TrackingFilter are in your application's classpath.
+<b>NOTE:</b> Make sure all jar files required by `TrackingFilter` are in your application's classpath.
 
 # Project Dependencies
 TrackingFilter requires the following:

@@ -1,5 +1,5 @@
 # TrackingFilter
-Simple end-user monitoring for Java EE web applications.
+Simple end-user tracking for Java EE web applications.
 
 TrackingFilter is an implementation of Java EE HTTP Servlet Filter. This servlet filter tracks the following:
 * End-user performance, behavior

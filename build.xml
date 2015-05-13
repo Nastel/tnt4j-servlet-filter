@@ -23,6 +23,12 @@
         <include name="tnt4j-api-final-all.jar"/>
       </fileset>
     </copy>
+	<copy todir="${project-build}">
+		<fileset dir="${root}">
+			<include name="README.md"/>
+			<include name="LICENSE"/>
+		</fileset>
+	</copy>
 	<copy todir="${project-build}/lib">
       <fileset dir="${lib}">
         <include name="*.jar"/>

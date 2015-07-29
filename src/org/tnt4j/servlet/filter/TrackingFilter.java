@@ -191,6 +191,7 @@ public class TrackingFilter implements Filter {
 		        msgTag,
 		        getMsgBody(httpReq));
 		httpEvent.setLocation(httpReq.getRemoteAddr());
+		httpEvent.setTag(httpReq.getRemoteAddr(), httpReq.getRemoteUser());
 		httpEvent.getOperation().setResource(httpReq.getRequestURI());
 		return httpEvent;
 	}

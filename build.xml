@@ -52,6 +52,7 @@
   <target name="clean" description="clean up">
     <echo message="Clean of ${ant.project.name} Complete${line.separator}" level="info"/>
     <delete dir="${project-build}"/>
+    <delete dir="${classes}"/>
     <echo message="Deleting old archives" level="info"/>
     <delete dir="${project-build}" includes="*.jar,*-all.zip"/>
  </target>

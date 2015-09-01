@@ -2,29 +2,29 @@
 <html lang="en-us">
   <head>
     <meta charset="UTF-8">
-    <title>Trackingfilter by Nastel</title>
+    <title>TNT4J-Servlet-Filter by Nastel</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
   </head>
   <body>
     <section class="page-header">
-      <h1 class="project-name">Trackingfilter</h1>
+      <h1 class="project-name">TNT4J-Servlet-Filter</h1>
       <h2 class="project-tagline">Simple end-user tracking for JEE web applications</h2>
-      <a href="https://github.com/Nastel/TrackingFilter" class="btn">View on GitHub</a>
-      <a href="https://github.com/Nastel/TrackingFilter/zipball/master" class="btn">Download .zip</a>
-      <a href="https://github.com/Nastel/TrackingFilter/tarball/master" class="btn">Download .tar.gz</a>
+      <a href="https://github.com/Nastel/tnt4j-servlet-filter" class="btn">View on GitHub</a>
+      <a href="https://github.com/Nastel/tnt4j-servlet-filter/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/Nastel/tnt4j-servlet-filter/tarball/master" class="btn">Download .tar.gz</a>
     </section>
 
     <section class="main-content">
       <h1>
-<a id="trackingfilter" class="anchor" href="#trackingfilter" aria-hidden="true"><span class="octicon octicon-link"></span></a>TrackingFilter</h1>
+<a id="servlet-filter" class="anchor" href="#servlet-filter" aria-hidden="true"><span class="octicon octicon-link"></span></a>Servlet-Filter</h1>
 
 <p>Simple end-user tracking for Java EE web applications.</p>
 
-<p>TrackingFilter is an implementation of Java EE HTTP Servlet Filter. This servlet filter tracks the following:</p>
+<p>Servlet-Filter is an implementation of Java EE HTTP Servlet Filter. This servlet filter tracks the following:</p>
 
 <ul>
 <li>End-user performance, behavior</li>
@@ -41,11 +41,11 @@
 <p>Simply add the following to your application's <code>web.xml</code>:</p>
 
 <div class="highlight highlight-xml"><pre>&lt;<span class="pl-ent">filter</span>&gt;
-    &lt;<span class="pl-ent">filter-name</span>&gt;TrackingFilter&lt;/<span class="pl-ent">filter-name</span>&gt;
-    &lt;<span class="pl-ent">filter-class</span>&gt;org.tnt4j.servlet.filter.TrackingFilter&lt;/<span class="pl-ent">filter-class</span>&gt;
+    &lt;<span class="pl-ent">filter-name</span>&gt;Servlet-Filter&lt;/<span class="pl-ent">filter-name</span>&gt;
+    &lt;<span class="pl-ent">filter-class</span>&gt;org.tnt4j.servlet.filter.Servlet-Filter&lt;/<span class="pl-ent">filter-class</span>&gt;
 &lt;/<span class="pl-ent">filter</span>&gt;
 &lt;<span class="pl-ent">filter-mapping</span>&gt;
-    &lt;<span class="pl-ent">filter-name</span>&gt;TrackingFilter&lt;/<span class="pl-ent">filter-name</span>&gt;
+    &lt;<span class="pl-ent">filter-name</span>&gt;Servlet-Filter&lt;/<span class="pl-ent">filter-name</span>&gt;
     &lt;<span class="pl-ent">url-pattern</span>&gt;/*&lt;/<span class="pl-ent">url-pattern</span>&gt;
 &lt;/<span class="pl-ent">filter-mapping</span>&gt;
 &lt;<span class="pl-ent">context-param</span>&gt;
@@ -53,12 +53,12 @@
     &lt;<span class="pl-ent">param-value</span>&gt;DEBUG&lt;/<span class="pl-ent">param-value</span>&gt;
 &lt;/<span class="pl-ent">context-param</span>&gt;</pre></div>
 
-<p><b>NOTE:</b> Make sure all jar files required by <code>TrackingFilter</code> are in your application's classpath.</p>
+<p><b>NOTE:</b> Make sure all jar files required by <code>Servlet-Filter</code> are in your application's classpath.</p>
 
 <h1>
 <a id="project-dependencies" class="anchor" href="#project-dependencies" aria-hidden="true"><span class="octicon octicon-link"></span></a>Project Dependencies</h1>
 
-<p>TrackingFilter requires the following:</p>
+<p>Servlet-Filter requires the following:</p>
 
 <ul>
 <li>JDK 1.6+</li>
@@ -70,13 +70,12 @@
 
 <ul>
 <li>TNT4J (<a href="https://github.com/Nastel/TNT4J">https://github.com/Nastel/TNT4J</a>)</li>
-<li>Log4J (<a href="http://logging.apache.org/log4j/1.2/">http://logging.apache.org/log4j/1.2/</a>)</li>
 <li>jkoolcloud.com (<a href="https://www.jkoolcloud.com">https://www.jkoolcloud.com</a>)</li>
 <li>AutoPilot M6 (<a href="http://www.nastel.com/products/autopilot-m6.html">http://www.nastel.com/products/autopilot-m6.html</a>)</li>
 </ul>
 
       <footer class="site-footer">
-        <span class="site-footer-owner"><a href="https://github.com/Nastel/TrackingFilter">Trackingfilter</a> is maintained by <a href="https://github.com/Nastel">Nastel</a>.</span>
+        <span class="site-footer-owner"><a href="https://github.com/Nastel/tnt4j-servlet-filter">TNT4J-Servlet-Filter</a> is maintained by <a href="https://github.com/Nastel">Nastel</a>.</span>
 
         <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
       </footer>
@@ -86,4 +85,3 @@
   
   </body>
 </html>
-

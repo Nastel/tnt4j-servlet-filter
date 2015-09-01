@@ -126,9 +126,15 @@ public class TrackingFilter implements Filter {
 			} else {
 				chain.doFilter(request, response);
 			}
+		} catch (IOException ie) {
+			error = ie;
+			throw ie;
+		} catch (ServletException se) {
+			error = se;
+			throw se;
 		} catch (Throwable ex) {
 			error = ex;
-			throw ex;
+			throw new RuntimeException(ex);
 		} finally {
 			endTiming(request, httpResp, activity, httpEvent, error);
 		}

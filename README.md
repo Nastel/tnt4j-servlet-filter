@@ -1,7 +1,7 @@
-# TrackingFilter
+# Servlet-Filter
 Simple end-user tracking for Java EE web applications.
 
-TrackingFilter is an implementation of Java EE HTTP Servlet Filter. This servlet filter tracks the following:
+Servlet-Filter is an implementation of Java EE HTTP Servlet Filter. This servlet filter tracks the following:
 * End-user performance, behavior
 * HTTP request performance, errors, exceptions
 * HTTP header, request parameters and attributes
@@ -13,11 +13,11 @@ The output can be streamed to any of the TNT4J sinks: file, log4j, socket, visua
 Simply add the following to your application's `web.xml`:
 ```xml
 <filter>
-	<filter-name>TrackingFilter</filter-name>
-	<filter-class>org.tnt4j.servlet.filter.TrackingFilter</filter-class>
+	<filter-name>Servlet-Filter</filter-name>
+	<filter-class>org.tnt4j.servlet.filter.Servlet-Filter</filter-class>
 </filter>
 <filter-mapping>
-	<filter-name>TrackingFilter</filter-name>
+	<filter-name>Servlet-Filter</filter-name>
 	<url-pattern>/*</url-pattern>
 </filter-mapping>
 <context-param>
@@ -25,15 +25,14 @@ Simply add the following to your application's `web.xml`:
 	<param-value>DEBUG</param-value>
 </context-param>
 ```
-<b>NOTE:</b> Make sure all jar files required by `TrackingFilter` are in your application's classpath.
+<b>NOTE:</b> Make sure all jar files required by `Servlet-Filter` are in your application's classpath.
 
 # Project Dependencies
-TrackingFilter requires the following:
+Servlet-Filter requires the following:
 * JDK 1.6+
 * TNT4J (https://github.com/Nastel/TNT4J)
 
 # Available Integrations
 * TNT4J (https://github.com/Nastel/TNT4J)
-* Log4J (http://logging.apache.org/log4j/1.2/)
 * jkoolcloud.com (https://www.jkoolcloud.com)
 * AutoPilot M6 (http://www.nastel.com/products/autopilot-m6.html)

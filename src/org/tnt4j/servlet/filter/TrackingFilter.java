@@ -32,11 +32,13 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
+import javax.servlet.http.HttpSession;
 
 import com.nastel.jkool.tnt4j.TrackingLogger;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.OpType;
 import com.nastel.jkool.tnt4j.core.Snapshot;
+import com.nastel.jkool.tnt4j.tracker.ContextTracker;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 import com.nastel.jkool.tnt4j.utils.Utils;
@@ -102,8 +104,10 @@ public class TrackingFilter implements Filter {
 		TrackingActivity activity = null;
 		TrackingEvent httpEvent = null;
 		HttpServletResponseWrapper httpResp = null;
+		HttpSession session = null;
 		try {
 			long beginUsec = Utils.currentTimeUsec();
+			session = ((HttpServletRequest) request).getSession();
 			if (request instanceof HttpServletRequest) {
 				HttpServletRequest httpReq = (HttpServletRequest) request;
 
@@ -119,6 +123,9 @@ public class TrackingFilter implements Filter {
 					activity.setUser(username);
 					httpEvent.getOperation().setUser(username);
 				}
+				String corrId = (String)session.getAttribute(ContextTracker.JK_CORR_ID);
+				if (corrId != null)
+					ContextTracker.set(corrId);
 			}
 			if (response instanceof HttpServletResponse) {
 				httpResp = new HttpServletResponseWrapper((HttpServletResponse)response);

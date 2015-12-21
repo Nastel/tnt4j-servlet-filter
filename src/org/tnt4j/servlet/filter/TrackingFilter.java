@@ -59,6 +59,7 @@ public class TrackingFilter implements Filter {
 	public static final String USER_KEY = "user-key";
 	public static final String MSG_KEY = "msg-key";
 	public static final String OPLEVEL_KEY = "op-level";
+	public static final String REQUEST = "REQUEST";
 
 	TrackingLogger logger;
 	
@@ -198,7 +199,7 @@ public class TrackingFilter implements Filter {
 		String corrid = getCorrId(httpReq);
 		String msgTag = getMsgTag(httpReq);	
 		TrackingEvent httpEvent = logger.newEvent(activity.getSeverity(),
-				OpType.REQUEST,
+				REQUEST,
 		        httpReq.getMethod() + httpReq.getRequestURI(),
 		        corrid,
 		        msgTag,

@@ -67,7 +67,7 @@ public class TrackingFilter implements Filter {
 	String tagKey = TAG_KEY;
 	String userKey = USER_KEY;
 	String msgKey = MSG_KEY;
-	OpLevel level = OpLevel.INFO;
+	OpLevel level = OpLevel.SUCCESS;
 
 	@Override
 	public void init(FilterConfig config) throws ServletException {
@@ -124,6 +124,7 @@ public class TrackingFilter implements Filter {
 				}
 				String corrId = (String)session.getAttribute(ContextTracker.JK_CORR_ID);
 				if (corrId != null) {
+					activity.setCorrelator(corrId);
 					ContextTracker.set(corrId);
 				}
 			}

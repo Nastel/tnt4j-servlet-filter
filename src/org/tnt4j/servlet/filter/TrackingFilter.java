@@ -200,8 +200,8 @@ public class TrackingFilter implements Filter {
 		String msgTag = getMsgTag(httpReq);	
 		TrackingEvent httpEvent = logger.newEvent(activity.getSeverity(),
 				REQUEST,
-		        httpReq.getMethod() + httpReq.getRequestURI(),
 		        corrid,
+		        httpReq.getMethod() + httpReq.getRequestURI(),
 		        msgTag,
 		        getMsgBody(httpReq));
 		httpEvent.setLocation(httpReq.getRemoteAddr());

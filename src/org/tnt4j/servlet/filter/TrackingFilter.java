@@ -19,9 +19,11 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -36,7 +38,9 @@ import javax.servlet.http.HttpSession;
 
 import com.nastel.jkool.tnt4j.TrackingLogger;
 import com.nastel.jkool.tnt4j.core.OpLevel;
+import com.nastel.jkool.tnt4j.core.Property;
 import com.nastel.jkool.tnt4j.core.Snapshot;
+import com.nastel.jkool.tnt4j.core.ValueTypes;
 import com.nastel.jkool.tnt4j.tracker.ContextTracker;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
@@ -123,9 +127,16 @@ public class TrackingFilter implements Filter {
 					httpEvent.getOperation().setUser(username);
 				}
 				String corrId = (String)session.getAttribute(ContextTracker.JK_CORR_ID);
-				if (corrId != null) {
-					activity.setCorrelator(corrId);
-					ContextTracker.set(corrId);
+				String rcorrId = (String)session.getAttribute(ContextTracker.JK_RCORR_ID);
+				if (corrId != null && rcorrId != null) {
+					Set<String> correlators = new HashSet<String>();
+					correlators.add(rcorrId);
+					correlators.add(corrId);
+					httpEvent.setCorrelator(correlators);
+					httpEvent.getOperation().addProperty(new Property(ContextTracker.JK_CORR_ID, corrId, ValueTypes.VALUE_TYPE_NONE));
+					httpEvent.getOperation().addProperty(new Property(ContextTracker.JK_RCORR_ID, rcorrId, ValueTypes.VALUE_TYPE_NONE));
+					ContextTracker.set(ContextTracker.JK_CORR_ID,corrId);
+					ContextTracker.set(ContextTracker.JK_RCORR_ID,rcorrId);
 				}
 			}
 			if (response instanceof HttpServletResponse) {

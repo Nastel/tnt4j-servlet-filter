@@ -126,17 +126,11 @@ public class TrackingFilter implements Filter {
 					activity.setUser(username);
 					httpEvent.getOperation().setUser(username);
 				}
-				String corrId = (String)session.getAttribute(ContextTracker.JK_CORR_ID);
-				String rcorrId = (String)session.getAttribute(ContextTracker.JK_RCORR_ID);
-				if (corrId != null && rcorrId != null) {
-					Set<String> correlators = new HashSet<String>();
-					correlators.add(rcorrId);
-					correlators.add(corrId);
-					httpEvent.setCorrelator(correlators);
-					httpEvent.getOperation().addProperty(new Property(ContextTracker.JK_CORR_ID, corrId, ValueTypes.VALUE_TYPE_NONE));
-					httpEvent.getOperation().addProperty(new Property(ContextTracker.JK_RCORR_ID, rcorrId, ValueTypes.VALUE_TYPE_NONE));
-					ContextTracker.set(ContextTracker.JK_CORR_ID,corrId);
-					ContextTracker.set(ContextTracker.JK_RCORR_ID,rcorrId);
+				String sessionCorrId = (String)session.getAttribute(ContextTracker.JK_CORR_SESSION_ID);
+				String requestCorrId = (String)session.getAttribute(ContextTracker.JK_CORR_REQUEST_ID);
+				if (sessionCorrId != null && requestCorrId != null) {
+					ContextTracker.set(ContextTracker.JK_CORR_SESSION_ID,sessionCorrId);
+					ContextTracker.set(ContextTracker.JK_CORR_REQUEST_ID,requestCorrId);
 				}
 			}
 			if (response instanceof HttpServletResponse) {
@@ -216,8 +210,26 @@ public class TrackingFilter implements Filter {
 		        msgTag,
 		        getMsgBody(httpReq));
 		httpEvent.setLocation(httpReq.getRemoteAddr());
-		httpEvent.setTag(httpReq.getRemoteAddr(), httpReq.getRemoteUser());
+		// check with Albert about getting rid of this.
+		// httpEvent.setTag(httpReq.getRemoteAddr(), httpReq.getRemoteUser());
+
 		httpEvent.getOperation().setResource(httpReq.getRequestURI());
+		
+		HttpSession session = httpReq.getSession();
+		String sessionCorrId = (String)session.getAttribute(ContextTracker.JK_CORR_SESSION_ID);
+		String requestCorrId = (String)session.getAttribute(ContextTracker.JK_CORR_REQUEST_ID);
+		if (sessionCorrId != null && requestCorrId != null)
+		{
+			Set<String> correlators = new HashSet<String>();
+			correlators.add(sessionCorrId);
+			correlators.add(requestCorrId);
+			// temporary until antl corrected to allow grouping on properties.
+			httpEvent.setTag(requestCorrId);
+			httpEvent.setCorrelator(correlators);
+			httpEvent.getOperation().addProperty(new Property(ContextTracker.JK_CORR_SESSION_ID, sessionCorrId, ValueTypes.VALUE_TYPE_NONE));
+			httpEvent.getOperation().addProperty(new Property(ContextTracker.JK_CORR_REQUEST_ID, requestCorrId, ValueTypes.VALUE_TYPE_NONE));
+		}
+		
 		return httpEvent;
 	}
 

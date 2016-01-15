@@ -19,11 +19,9 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -126,11 +124,11 @@ public class TrackingFilter implements Filter {
 					activity.setUser(username);
 					httpEvent.getOperation().setUser(username);
 				}
-				String sessionCorrId = (String)session.getAttribute(ContextTracker.JK_CORR_SESSION_ID);
-				String requestCorrId = (String)session.getAttribute(ContextTracker.JK_CORR_REQUEST_ID);
+				String sessionCorrId = (String) session.getAttribute(ContextTracker.JK_CORR_SESSION_ID);
+				String requestCorrId = (String) session.getAttribute(ContextTracker.JK_CORR_REQUEST_ID);
 				if (sessionCorrId != null && requestCorrId != null) {
-					ContextTracker.set(ContextTracker.JK_CORR_SESSION_ID,sessionCorrId);
-					ContextTracker.set(ContextTracker.JK_CORR_REQUEST_ID,requestCorrId);
+					ContextTracker.set(ContextTracker.JK_CORR_SESSION_ID, sessionCorrId);
+					ContextTracker.set(ContextTracker.JK_CORR_REQUEST_ID, requestCorrId);
 				}
 			}
 			if (response instanceof HttpServletResponse) {
@@ -210,26 +208,19 @@ public class TrackingFilter implements Filter {
 		        msgTag,
 		        getMsgBody(httpReq));
 		httpEvent.setLocation(httpReq.getRemoteAddr());
-		// check with Albert about getting rid of this.
-		// httpEvent.setTag(httpReq.getRemoteAddr(), httpReq.getRemoteUser());
-
 		httpEvent.getOperation().setResource(httpReq.getRequestURI());
-		
-		HttpSession session = httpReq.getSession();
-		String sessionCorrId = (String)session.getAttribute(ContextTracker.JK_CORR_SESSION_ID);
-		String requestCorrId = (String)session.getAttribute(ContextTracker.JK_CORR_REQUEST_ID);
-		if (sessionCorrId != null && requestCorrId != null)
-		{
-			Set<String> correlators = new HashSet<String>();
-			correlators.add(sessionCorrId);
-			correlators.add(requestCorrId);
-			// temporary until antl corrected to allow grouping on properties.
-			httpEvent.setTag(requestCorrId);
-			httpEvent.setCorrelator(correlators);
-			httpEvent.getOperation().addProperty(new Property(ContextTracker.JK_CORR_SESSION_ID, sessionCorrId, ValueTypes.VALUE_TYPE_NONE));
-			httpEvent.getOperation().addProperty(new Property(ContextTracker.JK_CORR_REQUEST_ID, requestCorrId, ValueTypes.VALUE_TYPE_NONE));
+		if (httpReq.getRemoteUser() != null) {
+			httpEvent.getOperation().addProperty(new Property("remote.user", httpReq.getRemoteUser()));
 		}
 		
+		HttpSession session = httpReq.getSession();
+		String sessionCorrId = (String) session.getAttribute(ContextTracker.JK_CORR_SESSION_ID);
+		String requestCorrId = (String) session.getAttribute(ContextTracker.JK_CORR_REQUEST_ID);
+		if (sessionCorrId != null && requestCorrId != null) {
+			httpEvent.setCorrelator(sessionCorrId, requestCorrId);
+			httpEvent.getOperation().addProperty(new Property(ContextTracker.JK_CORR_SESSION_ID, sessionCorrId, ValueTypes.VALUE_TYPE_ID));
+			httpEvent.getOperation().addProperty(new Property(ContextTracker.JK_CORR_REQUEST_ID, requestCorrId, ValueTypes.VALUE_TYPE_ID));
+		}		
 		return httpEvent;
 	}
 

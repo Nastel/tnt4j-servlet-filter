@@ -202,7 +202,7 @@ public class TrackingFilter implements Filter {
 		String corrid = getCorrId(httpReq);
 		String msgTag = getMsgTag(httpReq);	
 		TrackingEvent httpEvent = logger.newEvent(activity.getSeverity(),
-				REQUEST,
+				httpReq.getMethod(),
 		        corrid,
 		        httpReq.getMethod() + httpReq.getRequestURI(),
 		        msgTag,

@@ -13,11 +13,11 @@ The output can be streamed to any of the TNT4J sinks: file, log4j, socket, visua
 Simply add the following to your application's `web.xml`:
 ```xml
 <filter>
-	<filter-name>Servlet-Filter</filter-name>
-	<filter-class>org.tnt4j.servlet.filter.Servlet-Filter</filter-class>
+	<filter-name>ServletFilter</filter-name>
+	<filter-class>org.tnt4j.servlet.filter.TrackingFilter</filter-class>
 </filter>
 <filter-mapping>
-	<filter-name>Servlet-Filter</filter-name>
+	<filter-name>ServletFilter</filter-name>
 	<url-pattern>/*</url-pattern>
 </filter-mapping>
 <context-param>
@@ -25,7 +25,7 @@ Simply add the following to your application's `web.xml`:
 	<param-value>DEBUG</param-value>
 </context-param>
 ```
-<b>NOTE:</b> Make sure all jar files required by `Servlet-Filter` are in your application's classpath.
+<b>NOTE:</b> Make sure all jar files required by `ServletFilter` are in your application's classpath.
 
 # Project Dependencies
 Servlet-Filter requires the following:

@@ -40,12 +40,12 @@
 
 <p>Simply add the following to your application's <code>web.xml</code>:</p>
 
-<div class="highlight highlight-xml"><pre>&lt;<span class="pl-ent">filter</span>&gt;
-    &lt;<span class="pl-ent">filter-name</span>&gt;Servlet-Filter&lt;/<span class="pl-ent">filter-name</span>&gt;
-    &lt;<span class="pl-ent">filter-class</span>&gt;org.tnt4j.servlet.filter.Servlet-Filter&lt;/<span class="pl-ent">filter-class</span>&gt;
+<div class="highlight highlight-text-xml"><pre>&lt;<span class="pl-ent">filter</span>&gt;
+    &lt;<span class="pl-ent">filter-name</span>&gt;ServletFilter&lt;/<span class="pl-ent">filter-name</span>&gt;
+    &lt;<span class="pl-ent">filter-class</span>&gt;org.tnt4j.servlet.filter.TrackingFilter&lt;/<span class="pl-ent">filter-class</span>&gt;
 &lt;/<span class="pl-ent">filter</span>&gt;
 &lt;<span class="pl-ent">filter-mapping</span>&gt;
-    &lt;<span class="pl-ent">filter-name</span>&gt;Servlet-Filter&lt;/<span class="pl-ent">filter-name</span>&gt;
+    &lt;<span class="pl-ent">filter-name</span>&gt;ServletFilter&lt;/<span class="pl-ent">filter-name</span>&gt;
     &lt;<span class="pl-ent">url-pattern</span>&gt;/*&lt;/<span class="pl-ent">url-pattern</span>&gt;
 &lt;/<span class="pl-ent">filter-mapping</span>&gt;
 &lt;<span class="pl-ent">context-param</span>&gt;
@@ -53,7 +53,7 @@
     &lt;<span class="pl-ent">param-value</span>&gt;DEBUG&lt;/<span class="pl-ent">param-value</span>&gt;
 &lt;/<span class="pl-ent">context-param</span>&gt;</pre></div>
 
-<p><b>NOTE:</b> Make sure all jar files required by <code>Servlet-Filter</code> are in your application's classpath.</p>
+<p><b>NOTE:</b> Make sure all jar files required by <code>ServletFilter</code> are in your application's classpath.</p>
 
 <h1>
 <a id="project-dependencies" class="anchor" href="#project-dependencies" aria-hidden="true"><span class="octicon octicon-link"></span></a>Project Dependencies</h1>

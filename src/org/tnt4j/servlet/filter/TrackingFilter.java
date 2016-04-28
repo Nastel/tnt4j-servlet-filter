@@ -69,7 +69,7 @@ public class TrackingFilter implements Filter {
 	String tagKey = TAG_KEY;
 	String userKey = USER_KEY;
 	String msgKey = MSG_KEY;
-	OpLevel level = OpLevel.SUCCESS;
+	OpLevel level = OpLevel.INFO;
 
 	@Override
 	public void init(FilterConfig config) throws ServletException {

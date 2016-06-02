@@ -4,7 +4,7 @@
 
   <groupId>com.jkoolcloud.tnt4j</groupId>
   <artifactId>servlet.filter</artifactId>
-  <version>0.2.6-SNAPSHOT</version>
+  <version>0.5</version>
   <packaging>jar</packaging>
 
   <name>syslogd</name>
@@ -25,15 +25,15 @@
     </developer>
   </developers>
   <scm>
-    <connection>scm:git:git://github.com/Nastel/TNT4J</connection>
-    <developerConnection>scm:git:git//github.com/Nastel/TNT4J</developerConnection>
-    <url>https://github.com/Nastel/TNT4j</url>
+    <connection>scm:git:git://github.com/Nastel/tnt4j-servlet-filter</connection>
+    <developerConnection>scm:git:git//github.com/Nastel/tnt4j-servlet-filter</developerConnection>
+    <url>https://github.com/Nastel/tnt4j-servlet-filter</url>
   </scm>
   <distributionManagement>
 	 <repository>
       	<id>bintray-amavashev2-jkoolcloud</id>
       	<name>amavashev2-jkoolcloud</name>
-      	<url>https://api.bintray.com/maven/amavashev2/jkoolcloud/tnt4j/;publish=1;override=1</url>
+      	<url>https://api.bintray.com/maven/amavashev2/jkoolcloud/servlet-filter/;publish=1;override=1</url>
   	 </repository>
   </distributionManagement>
   

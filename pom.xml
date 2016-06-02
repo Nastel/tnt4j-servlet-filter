@@ -21,7 +21,7 @@
       <name>Albert Mavashev</name>
       <email>amavashev@jkoolcloud.com</email>
       <organization>jKool</organization>
-      <organizationUrl>http://www.jkoolcloud.com</organizationUrl>
+      <organizationUrl>http://www.jkoolcloud.com</organizationUrl> 
     </developer>
   </developers>
   <scm>

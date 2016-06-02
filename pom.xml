@@ -7,7 +7,7 @@
   <version>0.5</version>
   <packaging>jar</packaging>
 
-  <name>syslogd</name>
+  <name>servlet-filter</name>
   <url>http://www.jkoolcloud.com/</url>
   <description>Data Streaming, Data Analytics</description>
   <licenses>

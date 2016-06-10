@@ -32,6 +32,11 @@ Servlet-Filter requires the following:
 * JDK 1.6+
 * TNT4J (https://github.com/Nastel/TNT4J)
 
+Please use JCenter or Maven and these dependencies will be downloaded automatically. 
+
+Servlet-Filter requires TNT4J. You will need to point TNT4J to it's property file via the -Dtnt4j.config argument. This property file is located here in GitHub under the /config directory. If using JCenter or Maven, it can be found in the zip assembly along with the source code and javadoc.
+
+
 # Available Integrations
 * TNT4J (https://github.com/Nastel/TNT4J)
 * jkoolcloud.com (https://www.jkoolcloud.com)

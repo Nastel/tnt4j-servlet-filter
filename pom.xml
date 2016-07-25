@@ -145,6 +145,7 @@
                     <descriptors>
                         <descriptor>src/assemblies/deployAssembly.xml</descriptor>
                     </descriptors>
+            		<appendAssemblyId>false</appendAssemblyId>                    
                     <outputDirectory>${release.deploy.dir}</outputDirectory>
                 </configuration>
                 <executions>

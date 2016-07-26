@@ -42,6 +42,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <release.deploy.dir>../build/${project.name}</release.deploy.dir>
         <skipTests>true</skipTests>
+        <product.vendor>jKool, LLC</product.vendor>
     </properties>
 
 
@@ -179,6 +180,31 @@
                     <skipTests>${skipTests}</skipTests>
                 </configuration>
             </plugin>
+            <plugin>
+	         <groupId>org.apache.maven.plugins</groupId>
+	         <artifactId>maven-jar-plugin</artifactId>
+	         <version>2.4</version>
+	         <configuration>
+	             <archive>
+	                 <!--<index>true</index>-->
+	                 <manifest>
+	                     <addClasspath>true</addClasspath>
+	                 </manifest>
+	                 <manifestEntries>
+	                     <Implementation-Vendor>${product.vendor}</Implementation-Vendor>
+	                     <Implementation-Title>${project.name}</Implementation-Title>
+	                     <Implementation-Version>${project.version}</Implementation-Version>
+	                 </manifestEntries>
+	             </archive>
+	         </configuration>
+	         <executions>
+	             <execution>
+	                 <goals>
+	                     <goal>jar</goal>
+	                 </goals>
+	             </execution>
+	         </executions>
+     		</plugin>  
         </plugins>
     </build>
 </project>

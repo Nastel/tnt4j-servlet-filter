@@ -14,7 +14,7 @@ Simply add the following to your application's `web.xml`:
 ```xml
 <filter>
 	<filter-name>ServletFilter</filter-name>
-	<filter-class>org.tnt4j.servlet.filter.TrackingFilter</filter-class>
+	<filter-class>com.jkoolcloud.tnt4j.servlet.filter.TrackingFilter</filter-class>
 </filter>
 <filter-mapping>
 	<filter-name>ServletFilter</filter-name>

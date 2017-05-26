@@ -13,7 +13,7 @@
     <fileSets>
         <!-- static content -->
         <fileSet>
-            <directory></directory>
+            <directory>.</directory>
             <includes>
                 <include>LICENSE*</include>
                 <include>README*</include>

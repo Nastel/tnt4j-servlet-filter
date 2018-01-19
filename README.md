@@ -25,7 +25,7 @@ Simply add the following to your application's `web.xml`:
 	<param-value>DEBUG</param-value>
 </context-param>
 ```
-<b>NOTE:</b> Make sure all jar files required by `ServletFilter` are in your application's classpath.
+**NOTE:** Make sure all jar files required by `ServletFilter` are in your application's classpath.
 
 # Project Dependencies
 Servlet-Filter requires the following:

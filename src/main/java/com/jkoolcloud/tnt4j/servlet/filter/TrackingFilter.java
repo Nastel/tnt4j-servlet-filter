@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2014-2018 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,12 +23,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
@@ -47,8 +42,8 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 public class TrackingFilter implements Filter {
 	public static final String SNAPSHOT_PARMS = "Parameters";
 	public static final String SNAPSHOT_ATTRS = "Attributes";
-	public static final int    DEFAULT_FIELD_SIZE = 512;
-	
+	public static final int DEFAULT_FIELD_SIZE = 512;
+
 	public static final String CORRID_SESSION_ID = "session-id";
 	public static final String TAG_URI_QUERY = "uri-query";
 	public static final String USER_REMOTE = "user-remote";
@@ -63,7 +58,7 @@ public class TrackingFilter implements Filter {
 	public static final String REQUEST = "REQUEST";
 
 	TrackingLogger logger;
-	
+
 	int maxParmSize = DEFAULT_FIELD_SIZE;
 	String corrKey = CORRID_KEY;
 	String tagKey = TAG_KEY;
@@ -79,13 +74,13 @@ public class TrackingFilter implements Filter {
 
 		tagKey = config.getInitParameter(TAG_KEY);
 		tagKey = tagKey == null ? TAG_URI_QUERY : tagKey;
-		
+
 		userKey = config.getInitParameter(USER_KEY);
 		userKey = userKey == null ? USER_REMOTE : userKey;
-		
+
 		msgKey = config.getInitParameter(MSG_KEY);
 		msgKey = msgKey == null ? MSG_HTTP_HEADER : msgKey;
-		
+
 		String psize = config.getInitParameter(PARM_SIZE_KEY);
 		maxParmSize = psize == null ? maxParmSize : Integer.parseInt(psize);
 
@@ -100,8 +95,8 @@ public class TrackingFilter implements Filter {
 	}
 
 	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
-	        ServletException {
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+			throws IOException, ServletException {
 		Throwable error = null;
 		TrackingActivity activity = null;
 		TrackingEvent httpEvent = null;
@@ -132,7 +127,7 @@ public class TrackingFilter implements Filter {
 				}
 			}
 			if (response instanceof HttpServletResponse) {
-				httpResp = new HttpServletResponseWrapper((HttpServletResponse)response);
+				httpResp = new HttpServletResponseWrapper((HttpServletResponse) response);
 				chain.doFilter(request, httpResp);
 			} else {
 				chain.doFilter(request, response);
@@ -151,8 +146,8 @@ public class TrackingFilter implements Filter {
 		}
 	}
 
-	protected void endTiming(ServletRequest request, HttpServletResponseWrapper httpResp,
-	        TrackingActivity activity, TrackingEvent httpEvent, Throwable error) {
+	protected void endTiming(ServletRequest request, HttpServletResponseWrapper httpResp, TrackingActivity activity,
+			TrackingEvent httpEvent, Throwable error) {
 		try {
 			if (activity != null) {
 				if (httpResp != null) {
@@ -161,7 +156,7 @@ public class TrackingFilter implements Filter {
 				}
 				httpEvent.stop(error);
 				activity.tnt(httpEvent);
-				endAndEnrich((HttpServletRequest)request, activity, error);
+				endAndEnrich((HttpServletRequest) request, activity, error);
 				logger.tnt(activity);
 			}
 		} catch (Throwable ex) {
@@ -176,17 +171,17 @@ public class TrackingFilter implements Filter {
 		}
 		return field;
 	}
-	
+
 	protected void endAndEnrich(HttpServletRequest httpReq, TrackingActivity activity, Throwable error) {
 		Map<String, String[]> pMap = httpReq.getParameterMap();
 		Snapshot parms = logger.newSnapshot(httpReq.getRequestURI(), SNAPSHOT_PARMS);
-		for (Entry<String, String[]> entry: pMap.entrySet()) {
-			String [] list = entry.getValue();
+		for (Entry<String, String[]> entry : pMap.entrySet()) {
+			String[] list = entry.getValue();
 			if (list != null && list.length > 0) {
 				parms.add(entry.getKey(), trimField(list[0], maxParmSize));
 			}
 		}
-		
+
 		Snapshot attrs = logger.newSnapshot(httpReq.getRequestURI(), SNAPSHOT_ATTRS);
 		Enumeration<String> enList = httpReq.getAttributeNames();
 		while (enList.hasMoreElements()) {
@@ -194,33 +189,35 @@ public class TrackingFilter implements Filter {
 			attrs.add(key, httpReq.getAttribute(key));
 		}
 		activity.stop(error);
-		if (parms.size() > 0) activity.addSnapshot(parms);
-		if (attrs.size() > 0) activity.addSnapshot(attrs);
+		if (parms.size() > 0) {
+			activity.addSnapshot(parms);
+		}
+		if (attrs.size() > 0) {
+			activity.addSnapshot(attrs);
+		}
 	}
-	
+
 	protected TrackingEvent captureRequest(HttpServletRequest httpReq, TrackingActivity activity) {
 		String corrid = getCorrId(httpReq);
-		String msgTag = getMsgTag(httpReq);	
-		TrackingEvent httpEvent = logger.newEvent(activity.getSeverity(),
-				httpReq.getMethod(),
-		        corrid,
-		        httpReq.getMethod() + httpReq.getRequestURI(),
-		        msgTag,
-		        getMsgBody(httpReq));
+		String msgTag = getMsgTag(httpReq);
+		TrackingEvent httpEvent = logger.newEvent(activity.getSeverity(), httpReq.getMethod(), corrid,
+				httpReq.getMethod() + httpReq.getRequestURI(), msgTag, getMsgBody(httpReq));
 		httpEvent.setLocation(httpReq.getRemoteAddr());
 		httpEvent.getOperation().setResource(httpReq.getRequestURI());
 		if (httpReq.getRemoteUser() != null) {
 			httpEvent.getOperation().addProperty(new Property("remote.user", httpReq.getRemoteUser()));
 		}
-		
+
 		HttpSession session = httpReq.getSession();
 		String sessionCorrId = (String) session.getAttribute(ContextTracker.JK_CORR_SESSION_ID);
 		String requestCorrId = (String) session.getAttribute(ContextTracker.JK_CORR_REQUEST_ID);
 		if (sessionCorrId != null && requestCorrId != null) {
 			httpEvent.setCorrelator(sessionCorrId, requestCorrId);
-			httpEvent.getOperation().addProperty(new Property(ContextTracker.JK_CORR_SESSION_ID, sessionCorrId, ValueTypes.VALUE_TYPE_ID));
-			httpEvent.getOperation().addProperty(new Property(ContextTracker.JK_CORR_REQUEST_ID, requestCorrId, ValueTypes.VALUE_TYPE_ID));
-		}		
+			httpEvent.getOperation().addProperty(
+					new Property(ContextTracker.JK_CORR_SESSION_ID, sessionCorrId, ValueTypes.VALUE_TYPE_ID));
+			httpEvent.getOperation().addProperty(
+					new Property(ContextTracker.JK_CORR_REQUEST_ID, requestCorrId, ValueTypes.VALUE_TYPE_ID));
+		}
 		return httpEvent;
 	}
 
@@ -229,51 +226,53 @@ public class TrackingFilter implements Filter {
 		if (msgKey.equalsIgnoreCase(MSG_HTTP_HEADER)) {
 			msgText = getMessage(httpReq);
 		} else {
-			msgText = httpReq.getParameter(msgKey);	
-		}		
+			msgText = httpReq.getParameter(msgKey);
+		}
 		return msgText;
 	}
-	
+
 	protected String getUserName(HttpServletRequest httpReq) {
 		String username = null;
 		if (userKey.equalsIgnoreCase(USER_REMOTE)) {
 			username = httpReq.getRemoteUser();
 		} else {
-			username = httpReq.getParameter(userKey);	
-		}		
+			username = httpReq.getParameter(userKey);
+		}
 		return username;
 	}
-	
+
 	protected String getCorrId(HttpServletRequest httpReq) {
-		String corrid = null;		
+		String corrid = null;
 		if (corrKey.equalsIgnoreCase(CORRID_SESSION_ID)) {
 			corrid = httpReq.getSession().getId();
 		} else {
-			corrid = httpReq.getParameter(corrKey);			
+			corrid = httpReq.getParameter(corrKey);
 		}
 		return corrid;
 	}
-	
+
 	protected String getMsgTag(HttpServletRequest httpReq) {
-		String msgTag = null;		
+		String msgTag = null;
 		if (tagKey.equalsIgnoreCase(TAG_URI_QUERY)) {
 			String queryString = httpReq.getQueryString();
-			msgTag = queryString != null? httpReq.getRequestURI() + "?" + queryString: httpReq.getRequestURI();
+			msgTag = queryString != null ? httpReq.getRequestURI() + "?" + queryString : httpReq.getRequestURI();
 		} else {
-			msgTag = httpReq.getParameter(tagKey);			
+			msgTag = httpReq.getParameter(tagKey);
 		}
 		return msgTag;
 	}
-	
+
 	protected static Map<String, String> splitQuery(String query) {
-		if (query == null) return null;
+		if (query == null) {
+			return null;
+		}
 		Map<String, String> query_pairs = new LinkedHashMap<String, String>(49);
 		String[] pairs = query.split("&");
 		for (String pair : pairs) {
 			int idx = pair.indexOf("=");
 			try {
 				query_pairs.put(URLDecoder.decode(pair.substring(0, idx), "UTF-8"),
-				        URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
+						URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
 			} catch (UnsupportedEncodingException e) {
 			}
 		}

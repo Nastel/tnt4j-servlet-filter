@@ -7,7 +7,7 @@ Servlet-Filter is an implementation of Java EE HTTP Servlet Filter. This servlet
 * HTTP header, request parameters and attributes
 * JVM context such as CPU, memory, GC
 
-The output can be streamed to any of the TNT4J sinks: file, log4j, socket, visual analysis using jkoolcloud.com (http://www.jkoolcloud.com).
+The output can be streamed to any of the TNT4J sinks: file, log4j, socket, visual analysis using [jKoolCloud](https://www.jkoolcloud.com).
 
 ## Adding Tracking to your web applications
 Simply add the following to your application's `web.xml`:

@@ -29,7 +29,7 @@ Simply add the following to your application's `web.xml`:
 
 # Project Dependencies
 Servlet-Filter requires the following:
-* JDK 1.6+
+* JDK 1.7+
 * TNT4J (https://github.com/Nastel/TNT4J)
 
 Please use JCenter or Maven and these dependencies will be downloaded automatically.

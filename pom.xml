@@ -75,20 +75,13 @@
             <artifactId>javax.servlet-api</artifactId>
             <version>${servlet.api.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.26</version>
+            <scope>runtime</scope>
+        </dependency>
     </dependencies>
-
-    <profiles>
-        <profile>
-            <id>doclint-java8-disable</id>
-            <activation>
-                <jdk>[1.8,)</jdk>
-            </activation>
-            <properties>
-                <javadoc.opts>-Xdoclint:none</javadoc.opts>
-                <javadoc.failOnError>false</javadoc.failOnError>
-            </properties>
-        </profile>
-    </profiles>
 
     <build>
         <defaultGoal>clean install</defaultGoal>
@@ -124,7 +117,8 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.0.1</version>
                 <configuration>
-                    <failOnError>${javadoc.failOnError}</failOnError>
+                    <failOnError>false</failOnError>
+                    <doclint>all</doclint>
                 </configuration>
                 <executions>
                     <execution>
